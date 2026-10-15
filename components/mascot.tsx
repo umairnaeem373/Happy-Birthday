@@ -39,7 +39,7 @@ export function Mascot({
       role="img"
       aria-label={siteConfig.mascot.label}
     >
-      <div className={`pointer-events-auto ${isHeroPosition && "-mb-30"} lg:mt-100`} style={{ pointerEvents: "auto" }}>
+      <div className={`pointer-events-auto ${isHeroPosition && "-mb-30"} lg:mb-0 lg:mt-100`} style={{ pointerEvents: "auto" }}>
         <PageMascot
           directions={siteConfig.mascot.directions}
           reactions={siteConfig.mascot.reactions}
