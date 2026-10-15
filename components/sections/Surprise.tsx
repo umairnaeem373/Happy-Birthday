@@ -19,40 +19,40 @@ interface SurpriseDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const FLOAT_EMOJIS = ["✨", "💖", "⭐" , "😍"];
+const FLOAT_EMOJIS = ["✨", "💖", "⭐", "😍"];
 
 function FloatingDecorations() {
-  const [decorations] = React.useState<Array<{
-    left: string;
-    top: string;
-    animationDelay: string;
-    animationDuration: string;
-    emoji: string;
-  }>>(() =>
-    [...Array(15)].map(() => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 2}s`,
-      animationDuration: `${3 + Math.random() * 3}s`,
-      emoji: FLOAT_EMOJIS[Math.floor(Math.random() * FLOAT_EMOJIS.length)],
-    }))
-  );
+  const positions = [
+    { left: "5%", top: "5%" },
+    { left: "95%", top: "5%" },
+    { left: "5%", top: "95%" },
+    { left: "95%", top: "95%" },
+    { left: "50%", top: "10%" },
+    { left: "50%", top: "90%" },
+    { left: "10%", top: "50%" },
+    { left: "90%", top: "50%" },
+    { left: "20%", top: "20%" },
+    { left: "80%", top: "20%" },
+    { left: "20%", top: "80%" },
+    { left: "80%", top: "80%" },
+  ];
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      {decorations.map((deco, i) => (
+      {positions.map((pos, i) => (
         <div
           key={i}
           className="absolute text-2xl animate-float"
           style={{
-            left: deco.left,
-            top: deco.top,
-            animationDelay: deco.animationDelay,
-            animationDuration: deco.animationDuration,
+            left: pos.left,
+            top: pos.top,
+            animationDelay: `${(i * 0.3) % 2}s`,
+            animationDuration: `${3 + (i % 3)}s`,
             opacity: 0.6,
+            transform: `translate(-50%, -50%)`,
           }}
         >
-          {deco.emoji}
+          {FLOAT_EMOJIS[i % FLOAT_EMOJIS.length]}
         </div>
       ))}
     </div>
@@ -202,7 +202,7 @@ export function SurpriseDialog({
               render={
                 <Button
                   size="lg"
-                  className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="w-full relative z-10 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Sparkles className="h-4 w-4" />
                   Close Surprise
