@@ -14,10 +14,10 @@ interface MascotProps {
 }
 
 const positionStyles: Record<MascotPosition, string> = {
-  "top-right": "top-6 right-6",
-  "top-left": "top-6 left-6",
-  "bottom-right": "bottom-6 right-6",
-  "bottom-left": "bottom-6 left-6",
+  "top-right": "top-3 right-3",
+  "top-left": "top-3 left-3",
+  "bottom-right": "bottom-3 right-3",
+  "bottom-left": "bottom-3 left-3",
   hero: "absolute bottom-8 right-8 md:bottom-12 md:right-12",
   "hero-center":
     "absolute bottom-0 left-1/2 -translate-x-1/2 lg:bottom-auto lg:left-auto lg:right-[8%] lg:top-1/2 lg:translate-x-0 lg:-translate-y-1/2",
