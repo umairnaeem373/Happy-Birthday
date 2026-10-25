@@ -24,28 +24,47 @@ npm run build
 
 Edit `siteConfig` in `lib/config.ts`:
 
-- `BIRTHDAY_NAME`: birthday person's name, used in section headings and the page title.
 - `birthday.month` and `birthday.day`: birthday date. Use a **1-based month**
   (January is `1`, October is `10`). The countdown picks the next occurrence
   automatically.
+- `birthday.year`: birth year. When set, the age is derived automatically from it
+  (see the top-level exports below) and only rolls over after the birthday has
+  passed. Leave it out to fall back to `manualAge`.
 - `hero.headline`, `hero.subtitle`, and `hero.ctaText`: main hero text and
   surprise button label.
 - `wishes`: list of birthday wish cards. Each item has an `id`, `title`, and
   `content`; add, remove, or edit items in this array.
-- `memories`: carousel entries with an `id`, `image`, and `caption`. The current
-  carousel displays the image filename as a placeholder rather than rendering
-  the photo. To add actual photo display, update `components/sections/Memories.tsx`
-  as well as adding image files under `public/`.
+- `memories`: bento-grid entries with an `id`, `image`, and `caption`. The grid
+  renders five tiles (the first is a large 2x2 feature tile) and currently shows
+  the image filename as a placeholder rather than rendering the photo. On small
+  screens there is no slider — the grid is wider than the viewport and GSAP pans
+  it horizontally as you scroll until the last tile is in view, then the page
+  resumes scrolling normally. To add actual photo display, update
+  `components/sections/Memories.tsx` as well as adding image files under `public/`.
 - `surprise.title` and `surprise.message`: title and message in the surprise
   dialog.
 - `footer.credit`: footer attribution text. The `replayText` field is currently
   unused by the rendered footer.
 - `mascot.label` and `mascot.size`: screen-reader label and default mascot size.
 
+`lib/config.ts` also has a few top-level exports that sit alongside `siteConfig`:
+
+- `BIRTHDAY_NAME`: birthday person's name, used by `siteConfig.name`, section
+  headings, and the page title.
+- `manualAge`: fallback age, used only when `birthday.year` is missing.
+- `age`: the age derived by `calculateAge()` from `birthday.year`, evaluated when
+  the module loads and rolling over only after the birthday has passed. Don't
+  edit this directly — set `birthday.year` (or `manualAge` when no birth year is
+  configured) instead. The birthday cake in the surprise dialog renders one
+  candle per year of `age`.
+
 Some decorative content is intentionally defined alongside its component rather
 than in `siteConfig`. For example, the hero floating emojis are in
 `components/sections/Hero.tsx`, and the surprise dialog's floating emojis are
-in `components/sections/Surprise.tsx`.
+in `components/sections/Surprise.tsx`. The surprise dialog's birthday cake lives
+in `components/birthday/birthday-cake.tsx` with its styles in
+`app/birthday-cake.scss`, and it picks a random palette from `utils/cakePalette.ts`
+each time the dialog opens.
 
 ## Change the mascot character
 

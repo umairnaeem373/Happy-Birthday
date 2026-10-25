@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════
    Fluid Numerals — digits that roll like a physical odometer.
@@ -15,7 +15,6 @@ export interface BannerCountdownProps {
   endDate: Date;
   action?: { label: string; href: string };
   onExpire?: () => void;
-  onDismiss?: () => void;
   className?: string;
 }
 
@@ -36,14 +35,21 @@ function Digit({ value }: { value: number }) {
   const [cur, setCur] = React.useState(value);
   const [prev, setPrev] = React.useState<number | null>(null);
 
+  // Adjust state during render when the incoming digit changes so the
+  // outgoing digit can animate out (React's "previous renders" pattern).
+  if (value !== cur) {
+    setPrev(cur);
+    setCur(value);
+  }
+
+  // Clear the outgoing digit shortly after the roll animation finishes.
   React.useEffect(() => {
-    if (value !== cur) {
-      setPrev(cur);
-      setCur(value);
-      const id = setTimeout(() => setPrev(null), 400);
-      return () => clearTimeout(id);
+    if (prev === null) {
+      return;
     }
-  }, [value, cur]);
+    const id = setTimeout(() => setPrev(null), 400);
+    return () => clearTimeout(id);
+  }, [prev]);
 
   return (
     <span className="relative inline-flex h-[1.4em] w-[0.62em] items-center justify-center overflow-hidden">
@@ -85,15 +91,17 @@ export function BannerCountdown({
   endDate,
   action,
   onExpire,
-  onDismiss,
   className,
 }: BannerCountdownProps) {
   const [mounted, setMounted] = React.useState(false);
-  const [dismissed, setDismissed] = React.useState(false);
   const [time, setTime] = React.useState(() => calc(endDate));
   const expiredRef = React.useRef(false);
   const onExpireRef = React.useRef(onExpire);
-  onExpireRef.current = onExpire;
+
+  /* keep the latest onExpire without restarting the tick interval */
+  React.useEffect(() => {
+    onExpireRef.current = onExpire;
+  });
 
   /* entrance expand */
   React.useEffect(() => {
@@ -131,9 +139,9 @@ export function BannerCountdown({
     <div
       className={cn(
         "grid transition-[grid-template-rows] ease-[cubic-bezier(0.16,1,0.3,1)]",
-        mounted && !dismissed
-          ? "grid-template-rows-[1fr] duration-500"
-          : "grid-template-rows[0fr] duration-300",
+        mounted
+          ? "grid-rows-[1fr] duration-500"
+          : "grid-rows-[0fr] duration-300",
       )}
     >
       <div className="overflow-hidden">
@@ -142,7 +150,6 @@ export function BannerCountdown({
             "relative flex flex-wrap items-center justify-center gap-x-8 gap-y-3 px-12 py-4",
             "after:pointer-events-none after:absolute after:bottom-0 after:inset-x-0 after:h-px after:bg-linear-to-r after:from-transparent after:via-border after:to-transparent",
             "transition-[opacity,transform] duration-150",
-            dismissed && "opacity-0 -translate-y-1",
             className,
           )}
         >

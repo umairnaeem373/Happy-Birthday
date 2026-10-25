@@ -55,18 +55,6 @@ export default function HomePage() {
     setSurpriseOpen(true);
   }, []);
 
-  const handleReplay = React.useCallback(() => {
-    ScrollTrigger.getAll().forEach((st) => {
-      if (st.animation) {
-        st.animation.progress(0).pause();
-      }
-      st.refresh();
-    });
-    gsap.globalTimeline.restart();
-    setIsInHero(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
   const mascotPosition = isInHero ? "hero-center" : "bottom-right";
   const mascotSize = isInHero ? 400 : siteConfig.mascot.size;
 
@@ -87,7 +75,7 @@ export default function HomePage() {
           isOpen={surpriseOpen}
           onOpenChange={setSurpriseOpen}
         />
-        <Footer onReplay={handleReplay} />
+        <Footer />
       </main>
 
       <Toaster

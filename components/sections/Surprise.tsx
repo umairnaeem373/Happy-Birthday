@@ -7,12 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
-import { Sparkles, Gift } from "lucide-react";
+import { Gift } from "lucide-react";
+import confetti from "canvas-confetti";
+import BirthdayCake from "@/components/birthday/birthday-cake";
+import { getRandomCakeColors, type CakeColors } from "@/utils/cakePalette";
 
 interface SurpriseDialogProps {
   isOpen: boolean;
@@ -59,6 +60,19 @@ function FloatingDecorations() {
   );
 }
 
+// The dialog content only mounts on the client once it opens, so choosing a
+// random palette here is safe from hydration mismatches and gives a fresh
+// cake every time the surprise is revealed.
+function SurpriseCake() {
+  const [cakeColors] = React.useState<CakeColors>(() => getRandomCakeColors());
+
+  return (
+    <div className="relative mt-2">
+      <BirthdayCake cakeColors={cakeColors} />
+    </div>
+  );
+}
+
 export function SurpriseDialog({
   isOpen,
   onOpenChange,
@@ -80,82 +94,74 @@ export function SurpriseDialog({
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const originY = Math.min(0.9, Math.max(0.1, rect.bottom / viewportHeight));
-    let active = true;
 
-    void import("canvas-confetti").then(({ default: confetti }) => {
-      if (!active) return;
+    const balloon = confetti.shapeFromText({ text: "🎈", scalar: 2.5 });
+    const sharedOptions = {
+      colors: ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#2196f3", "#00bcd4", "#4caf50", "#ffeb3b", "#ff9800"],
+      disableForReducedMotion: true,
+      zIndex: 60,
+    };
 
-      const balloon = confetti.shapeFromText({ text: "🎈", scalar: 2.5 });
-      const sharedOptions = {
-        colors: ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#2196f3", "#00bcd4", "#4caf50", "#ffeb3b", "#ff9800"],
-        disableForReducedMotion: true,
-        zIndex: 60,
-      };
+    confetti({
+      ...sharedOptions,
+      particleCount: 80,
+      angle: 60,
+      spread: 65,
+      origin: {
+        x: Math.max(0.08, rect.left / viewportWidth),
+        y: originY,
+      },
+    });
+    confetti({
+      ...sharedOptions,
+      particleCount: 80,
+      angle: 120,
+      spread: 65,
+      origin: {
+        x: Math.min(0.92, rect.right / viewportWidth),
+        y: originY,
+      },
+    });
+    confetti({
+      ...sharedOptions,
+      particleCount: 60,
+      angle: 90,
+      spread: 90,
+      origin: {
+        x: (rect.left + rect.width / 2) / viewportWidth,
+        y: originY,
+      },
+    });
 
-      confetti({
-        ...sharedOptions,
-        particleCount: 80,
-        angle: 60,
-        spread: 65,
-        origin: {
-          x: Math.max(0.08, rect.left / viewportWidth),
-          y: originY,
-        },
-      });
-      confetti({
-        ...sharedOptions,
-        particleCount: 80,
-        angle: 120,
-        spread: 65,
-        origin: {
-          x: Math.min(0.92, rect.right / viewportWidth),
-          y: originY,
-        },
-      });
-      confetti({
-        ...sharedOptions,
-        particleCount: 60,
-        angle: 90,
-        spread: 90,
-        origin: {
-          x: (rect.left + rect.width / 2) / viewportWidth,
-          y: originY,
-        },
-      });
-
-      confetti({
-        ...sharedOptions,
-        particleCount: 12,
-        angle: 90,
-        spread: 36,
-        startVelocity: 32,
-        gravity: 0.35,
-        drift: -0.15,
-        ticks: 280,
-        scalar: 2.5,
-        shapes: [balloon],
-        origin: { x: 0.12, y: 1 },
-      });
-      confetti({
-        ...sharedOptions,
-        particleCount: 12,
-        angle: 90,
-        spread: 36,
-        startVelocity: 32,
-        gravity: 0.35,
-        drift: 0.15,
-        ticks: 280,
-        scalar: 2.5,
-        shapes: [balloon],
-        origin: { x: 0.88, y: 1 },
-      });
+    confetti({
+      ...sharedOptions,
+      particleCount: 12,
+      angle: 90,
+      spread: 36,
+      startVelocity: 32,
+      gravity: 0.35,
+      drift: -0.15,
+      ticks: 280,
+      scalar: 2.5,
+      shapes: [balloon],
+      origin: { x: 0.12, y: 1 },
+    });
+    confetti({
+      ...sharedOptions,
+      particleCount: 12,
+      angle: 90,
+      spread: 36,
+      startVelocity: 32,
+      gravity: 0.35,
+      drift: 0.15,
+      ticks: 280,
+      scalar: 2.5,
+      shapes: [balloon],
+      origin: { x: 0.88, y: 1 },
     });
 
     return () => {
-      active = false;
-      void import("canvas-confetti").then(({ default: confetti }) => {
-        confetti.reset();
-      });
+      confetti.reset();
     };
   }, [contentElement, isOpen, prefersReducedMotion]);
 
@@ -165,51 +171,32 @@ export function SurpriseDialog({
       <DialogContent
         ref={contentRef}
         className={cn(
-          "max-w-lg overflow-hidden",
+          "max-w-lg max-h-[calc(100dvh-2rem)] overflow-x-hidden overflow-y-auto overscroll-contain",
           "bg-gradient-to-br from-background via-primary/5 to-secondary/5"
         )}
       >
-        <div className="relative p-6">
+        <div className="relative">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from)_0%,transparent_70%)] from-primary/20 to-transparent pointer-events-none" />
           <FloatingDecorations />
 
-          <DialogHeader className="relative flex justify-center items-center text-center mb-6">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/10 mb-4">
-              <Gift className="h-10 w-10 text-foreground" />
+          <DialogHeader className="relative flex justify-center items-center text-center mb-3">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 mb-1">
+              <Gift className="h-7 w-7 text-foreground" />
             </div>
-            <DialogTitle className="text-2xl md:text-3xl font-bold text-foreground">
+            <DialogTitle className="text-xl md:text-2xl font-bold text-foreground">
               {siteConfig.surprise.title}
             </DialogTitle>
-            <DialogDescription className="text-lg text-muted-foreground mt-2">
+            <DialogDescription className="text-sm text-muted-foreground mt-1">
               A little something special for you
             </DialogDescription>
           </DialogHeader>
 
-          <div className="relative space-y-4">
-            <div className="bg-card border border-border rounded-xl p-6 relative overflow-hidden">
-              <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-transparent" />
-              <p className="relative text-lg leading-relaxed text-foreground whitespace-pre-wrap">
-                {siteConfig.surprise.message}
-              </p>
-            </div>
-
+          <div className="relative space-y-2">
             <div className="flex items-center justify-center gap-4 text-muted-foreground">
-              <span className="text-sm font-medium">Made with love for you</span></div>
+              <span className="text-sm font-medium">Made with ❤️ for you</span></div>
           </div>
 
-          <div className="mt-6 border border-transparent text-center">
-            <DialogClose
-              render={
-                <Button
-                  size="lg"
-                  className="w-full relative z-10 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  Close Surprise
-                </Button>
-              }
-            />
-          </div>
+          <SurpriseCake />
         </div>
       </DialogContent>
     </Dialog>

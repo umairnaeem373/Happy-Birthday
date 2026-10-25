@@ -1,19 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
-import { Heart, RotateCcw, Sparkles } from "lucide-react";
 
 interface FooterProps {
-  onReplay: () => void;
   className?: string;
 }
 
-export function Footer({ onReplay, className }: FooterProps) {
+export function Footer({ className }: FooterProps) {
   const footerRef = React.useRef<HTMLElement>(null);
   const prefersReducedMotion = React.useMemo(
     () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,

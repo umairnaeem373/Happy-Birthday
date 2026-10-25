@@ -5,7 +5,6 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { useCountdown } from "@/lib/countdown";
 import { siteConfig } from "@/lib/config";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { BannerCountdown } from "../ruixen/banner-countdown";
 

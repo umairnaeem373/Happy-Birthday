@@ -59,8 +59,8 @@ export function Hero({ onSurpriseClick }: HeroProps) {
 
       tl.from(headlineSplit.chars, {
         opacity: 0,
-        y: 80,
-        rotationX: -90,
+        y: -80,
+        rotationX: 90,
         duration: 0.8,
         stagger: 0.03,
         ease: "back.out(1.5)",

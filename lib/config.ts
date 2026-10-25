@@ -1,14 +1,30 @@
-const BIRTHDAY_NAME = "Love"; // Replace with the birthday person's name
+export const BIRTHDAY_NAME = "Love"; // Replace with the birthday person's name
+
+/**
+ * Manual fallback age. Only used when `siteConfig.birthday.year` is missing.
+ */
+export const manualAge = 30;
+
+/**
+ * Birthday details. `year` is the birth year and is optional — when it is
+ * omitted the derived age falls back to `manualAge`.
+ */
+export interface BirthdayConfig {
+  year?: number;
+  month: number;
+  day: number;
+}
 
 export const siteConfig = {
   name: BIRTHDAY_NAME,
   birthday: {
+    year: 1995,
     month: 10, // October
     day: 31,
-  },
+  } as BirthdayConfig,
   hero: {
     headline: `Happy Birthday, ${BIRTHDAY_NAME}! 🎉`,
-    subtitle: "Wishing you a day filled with love, laughter, and all your favorite things.",
+    subtitle: "Wishing my Cutie Pie 😍 a day filled with love, laughter, and all your favorite things.",
     ctaText: "Open your surprise",
   },
   wishes: [
@@ -64,6 +80,11 @@ export const siteConfig = {
       image: "/photos/memory4.jpg",
       caption: "Pure joy",
     },
+    {
+      id: 5,
+      image: "/photos/memory5.jpg",
+      caption: "Adventures with you",
+    },
   ],
   surprise: {
     title: " A Special Surprise for You",
@@ -74,11 +95,33 @@ export const siteConfig = {
     credit: "Made with ❤️ by your Love",
   },
   mascot: {
-    directions: "/mascots/ballerina-directions.webp",
-    reactions: "/mascots/ballerina-reactions.webp",
+    directions: "/mascots/hijabi-directions.webp",
+    reactions: "/mascots/hijabi-reactions.webp",
     size: 180,
     label: "Birthday mascot",
   },
 } as const;
 
 export type SiteConfig = typeof siteConfig;
+
+/**
+ * Derives the current age from `siteConfig.birthday.year`.
+ * The age only rolls over once the birthday has passed this year.
+ * Falls back to `manualAge` when no birth year is configured.
+ */
+export function calculateAge(reference: Date = new Date()): number {
+  const { year, month, day } = siteConfig.birthday;
+
+  if (!year) {
+    return manualAge;
+  }
+
+  const hasHadBirthdayThisYear =
+    reference.getMonth() + 1 > month ||
+    (reference.getMonth() + 1 === month && reference.getDate() >= day);
+
+  return reference.getFullYear() - year - (hasHadBirthdayThisYear ? 0 : 1);
+}
+
+/** Current age, derived from the configured birth year (or `manualAge`). */
+export const age = calculateAge();
