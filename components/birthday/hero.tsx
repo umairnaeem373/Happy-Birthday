@@ -9,6 +9,7 @@ import { ArrowDown, Cake, Heart, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { fireConfetti } from "./confetti"
+import { BIRTHDAY_NAME } from "@/lib/config"
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -223,7 +224,7 @@ export function Hero() {
             data-hero-name
             className="font-display text-[clamp(4rem,17vw,10rem)] leading-[0.95] font-black text-white italic"
           >
-            Rubi
+            ${BIRTHDAY_NAME}
           </h1>
         </div>
 

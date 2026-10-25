@@ -4,6 +4,7 @@ import * as React from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { Mascot } from "page-mascot"
+import { BIRTHDAY_NAME } from "@/lib/config"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -116,7 +117,7 @@ export function BirthdayMascot() {
           <Mascot
             directions="/mascots/hijabi-directions.webp"
             reactions="/mascots/hijabi-reactions.webp"
-            label="Rubi's birthday mascot"
+            label={`${BIRTHDAY_NAME}'s birthday mascot`}
             size={140}
           />
         </div>

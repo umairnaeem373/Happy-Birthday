@@ -7,6 +7,7 @@ import { Heart, Sparkles } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { BIRTHDAY_NAME } from "@/lib/config"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -68,7 +69,7 @@ export function WishLetter() {
               data-reveal
               className="text-base leading-relaxed text-foreground sm:text-lg"
             >
-              Rubi, you have a way of making heavy days feel lighter and ordinary
+              ${BIRTHDAY_NAME}, you have a way of making heavy days feel lighter and ordinary
               moments feel like memories. The kindest heart, the loudest laugh, and a
               glow that no dull afternoon can put out.
             </p>

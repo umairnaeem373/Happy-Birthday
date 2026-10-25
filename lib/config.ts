@@ -92,7 +92,7 @@ export const siteConfig = {
       `${BIRTHDAY_NAME}, on your birthday, I just want you to know how incredibly special you are. Every moment with you is a gift, and I'm so grateful for you. May this year bring you everything your heart desires and more. Happy Birthday, my love! ❤️`,
   },
   footer: {
-    credit: "Made with ❤️ by your Love",
+    credit: "Made with ❤️ for you",
   },
   mascot: {
     directions: "/mascots/hijabi-directions.webp",
